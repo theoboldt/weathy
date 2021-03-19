@@ -42,8 +42,8 @@ class MbFetcher implements MbFetcherInterface
         if (empty($this->url1)) {
             throw new \RuntimeException('Url not configured');
         }
-        $client   = $this->client(dirname($this->url1));
-        $response = $client->get(basename($this->url1));
+        $client   = $this->client($this->url1);
+        $response = $client->get('');
         $status   = $response->getStatusCode();
         
         if ($status === 200) {

@@ -8,6 +8,9 @@
     "guzzlehttp/psr7": {
         "version": "1.7.0"
     },
+    "masterminds/html5": {
+        "version": "2.7.4"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
