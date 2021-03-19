@@ -29,3 +29,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Fetcher\Mb\MbFetcher:
+        arguments:
+            $url1: '%env(MB_URL_1)%'
+
+    App\Fetcher\Mb\MbCachedFetcher:
+        arguments:
+            $fetcher: '@App\Fetcher\Mb\MbFetcher'
+            $cachePath: '%kernel.project_dir%/var/cache/mb'
+

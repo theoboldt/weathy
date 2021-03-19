@@ -8,18 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace App\Fetcher\Oc;
 
-namespace App\Fetcher;
 
-
-class OnecallFetcher
+class OnecallCachedFetcher implements OnecallFetcherInterface
 {
-
+    
     /**
      * @var string
      */
     private string $cachePath;
-
+    
     /**
      * OnecallFetcher constructor.
      *
@@ -29,12 +28,12 @@ class OnecallFetcher
     {
         $this->cachePath = rtrim($cachePath, DIRECTORY_SEPARATOR);
     }
-
-
-    public function fetch1()
+    
+    
+    public function fetch1($date)
     {
         $date = new \DateTimeImmutable();
-        $key  = 'oc_'.$date->format('Y-m-d_h-i');
+        $key  = 'oc_' . $date->format('Y-m-d_h-i');
     }
-
+    
 }
