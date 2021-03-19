@@ -13,22 +13,21 @@ namespace App\Controller;
 
 use App\Fetcher\Mb\MbCachedFetcher;
 use App\Fetcher\Mb\MbFetcher;
+use App\Parser\Mb\MbParser;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController
 {
-    private MbCachedFetcher $mbFetcher;
+   
+    private MbParser $parser;
     
     /**
      * DefaultController constructor.
      *
-     * @param MbCachedFetcher $mbFetcher
+     * @param MbParser $parser
      */
-    public function __construct(MbCachedFetcher $mbFetcher)
-    {
-        $this->mbFetcher = $mbFetcher;
-    }
+    public function __construct(MbParser $parser) { $this->parser = $parser; }
     
     
     /**
@@ -45,9 +44,9 @@ class DefaultController
     public function w1(): Response
     {
         $date   = new \DateTimeImmutable('now');
-        $result = $this->mbFetcher->fetch1($date);
+        $result = $this->parser->parse1($date);
         
-        return new JsonResponse(['status' => 'ok']);
+        return new JsonResponse(['status' => 'ok', 'result' => $result]);
     }
     
     

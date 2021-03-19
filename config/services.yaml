@@ -39,3 +39,7 @@ services:
             $fetcher: '@App\Fetcher\Mb\MbFetcher'
             $cachePath: '%kernel.project_dir%/var/cache/mb'
 
+    App\Parser\Mb\MbParser:
+        arguments:
+            $fetcher: '@App\Fetcher\Mb\MbCachedFetcher'
+
