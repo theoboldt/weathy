@@ -46,7 +46,7 @@ class MbCachedFetcher implements MbFetcherInterface
      */
     private function getCacheKey(int $provider, \DateTimeImmutable $date): string
     {
-        return self::MAIN_KEY . '_' . $provider . '_' . $date->format('Y-m-d_h-i') . '.htm';
+        return self::MAIN_KEY . '_' . $provider . '_' . $date->format('Y-m-d_h') . '.htm';
     }
     
     /**

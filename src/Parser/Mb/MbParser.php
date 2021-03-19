@@ -31,20 +31,12 @@ class MbParser
         $this->fetcher = $fetcher;
     }
 
-
     /**
-     * @param \DateTimeImmutable $date
+     * @param Crawler $dayNodes
      * @return array
      */
-    public function parse1(\DateTimeImmutable $date): array
+    private function provideTribus(Crawler $dayNodes): array
     {
-        $html = $this->fetcher->fetch1($date);
-        $html = str_replace('<di class="precip-bar-flex">', '<div class="precip-bar-flex">', $html);
-
-        $crawler = new Crawler($html);
-
-        $dayNodes = $crawler->filter('html body main #tab_wrapper .tab_detail.active table tbody');
-
         $tribus = [];
         $i      = 0;
         $dayNodes->filter('tr.times')->children()->each(
@@ -72,7 +64,7 @@ class MbParser
         $dayNodes->filter('tr.temperatures')->children()->each(
             function (Crawler $node) use (&$tribus, &$i) {
                 if ($node->matches('td')) {
-                    if (preg_match('/^(\d+)°$/', trim($node->text()), $matches)) {
+                    if (preg_match('/^(\-\d+)°$/', trim($node->text()), $matches)) {
                         $tribus[$i++]['temperature'] = (int)$matches[1];
                     }
 
@@ -125,16 +117,25 @@ class MbParser
             }
         );
 
-        $rainHourly = [];
-        $i          = 0;
+        return $tribus;
+    }
+
+    /**
+     * @param Crawler $dayNodes
+     * @return array
+     */
+    private function provideHourly(Crawler $dayNodes): array
+    {
+        $hourly = [];
+        $i      = 0;
         $dayNodes->filter('tr.precip-hourly-title div.precip-hourly .precip-help')->each(
-            function (Crawler $node) use (&$rainHourly, &$i) {
+            function (Crawler $node) use (&$hourly, &$i) {
                 $text = trim($node->text());
                 if (preg_match(
                     '/^(\d+):(?:\d+) to (?:\d+):(?:\d+):(\d+)\% chance of precipitation in the area\.([0-9\.]+)/',
                     $text, $matches
                 )) {
-                    $rainHourly[$i++] = [
+                    $hourly[$i++] = [
                         'hour'               => (int)$matches[1],
                         'rain_probability'   => (int)$matches[2],
                         'rain_precipitation' => (float)$matches[3],
@@ -143,6 +144,99 @@ class MbParser
             }
         );
 
-        return ['tribus' => $tribus, 'hourly' => $rainHourly];
+        return $hourly;
+    }
+
+    /**
+     * @param Crawler $dailyNodes
+     * @return array
+     */
+    private function provideDaily(Crawler $dailyNodes): array
+    {
+        $daily = [];
+        $i     = 0;
+
+        $dailyNodes->each(
+            function (Crawler $node) use (&$daily, &$i) {
+                $dayShort = trim($node->filter('.tab_day_short')->text());
+
+                $daily[$i]['day'] = self::dayShortToTerm($dayShort);
+
+                $tempMax = trim($node->filter('.tab_temp_max')->text());
+                if (preg_match('/^([\-\d+]+)\s*/', $tempMax, $matches)) {
+                    $daily[$i]['temperature_max'] = (int)$matches[1];
+                }
+                $tempMin = trim($node->filter('.tab_temp_min')->text());
+                if (preg_match('/^([\-\d+]+)\s*/', $tempMin, $matches)) {
+                    $daily[$i]['temperature_min'] = (int)$matches[1];
+                }
+                $wind = trim($node->filter('.wind')->text());
+                if (preg_match('/^.*(\d+)\skm\/h.*$/', $wind, $matches)) {
+                    $daily[$i]['wind'] = (int)$matches[1];
+                }
+                $rain = trim($node->filter('.tab_precip')->text());
+                if ($rain !== '-') {
+                    $rain = '';
+                }
+                $daily[$i]['rain'] = $rain;
+
+                $sun = trim($node->filter('.tab_sun')->text());
+                if (preg_match('/^\s*(\d+)\sh\s*$/', $sun, $matches)) {
+                    $daily[$i]['sun'] = (int)$matches[1];
+                }
+
+                $predictabilityStyle = $node->filter('.meter_outer .meter_inner')->attr('style');
+                if (preg_match('/^.*width:\s+(\d+)\%.*$/', $predictabilityStyle, $matches)) {
+                    $daily[$i]['predictability'] = (int)$matches[1];
+                }
+
+                $i++;
+            }
+        );
+
+        return $daily;
+    }
+
+    /**
+     * @param \DateTimeImmutable $date
+     * @return array
+     */
+    public function parse1(\DateTimeImmutable $date): array
+    {
+        $html = $this->fetcher->fetch1($date);
+        $html = str_replace('<di class="precip-bar-flex">', '<div class="precip-bar-flex">', $html);
+
+        $crawler = new Crawler($html);
+
+        $dayNodes   = $crawler->filter('html body main #tab_wrapper .tab');
+        $dailyNodes = $crawler->filter('html body main #tab_wrapper .tab_detail.active table tbody');
+
+        return [
+            'tribus' => $this->provideTribus($dailyNodes),
+            'hourly' => $this->provideHourly($dailyNodes),
+            'daily'  => $this->provideDaily($dayNodes),
+        ];
+    }
+
+    private static function dayShortToTerm(string $dayShort)
+    {
+        switch (strtolower($dayShort)) {
+            case 'sat':
+                return 'Sa';
+            case 'sun':
+                return 'So';
+            case 'mon':
+                return 'Mo';
+            case 'tue':
+                return 'Di';
+            case 'wed':
+                return 'Mi';
+            case 'thu':
+                return 'Do';
+            case 'fri':
+                return 'Fr';
+            default:
+                return $dayShort;
+        }
     }
 }
