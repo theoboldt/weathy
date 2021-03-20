@@ -49,7 +49,7 @@ class OcParser
         $maxDt    = 0;
         $minutely = [];
         foreach ($data['minutely'] as $datum) {
-            if ($datum['dt'] === 0 || $datum['dt'] < $minDt) {
+            if ($minDt === 0 || $datum['dt'] < $minDt) {
                 $minDt = $datum['dt'];
             }
             if ($datum['dt'] > $maxDt) {
