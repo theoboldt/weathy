@@ -11,9 +11,14 @@
 namespace App\Fetcher\Oc;
 
 
-interface OnecallFetcherInterface
+interface OcFetcherInterface
 {
-    
-    public function fetch1(\DateTimeImmutable $date);
-    
+
+    /**
+     * @param int                $source
+     * @param \DateTimeImmutable $date
+     * @return string
+     */
+    public function fetch(int $source, \DateTimeImmutable $date): string;
+
 }

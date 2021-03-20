@@ -7,3 +7,9 @@ weatherGeneral:
     controller: App\Controller\DefaultController::weatherGeneral
     requirements:
         source: '\d+'
+
+weatherRainMinutely:
+    path: /r/{source}
+    controller: App\Controller\DefaultController::weatherRainMinutely
+    requirements:
+        source: '\d+'

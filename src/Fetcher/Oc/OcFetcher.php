@@ -9,20 +9,17 @@
  */
 
 
-namespace App\Fetcher\Mb;
+namespace App\Fetcher\Oc;
 
 
 use App\Fetcher\ClientTrait;
 
-class MbFetcher implements MbFetcherInterface
+class OcFetcher implements OcFetcherInterface
 {
     use ClientTrait;
-
-    /**
-     * @var string
-     */
+    
     private string $url1;
-
+    
     /**
      * OcFetcher constructor.
      *
@@ -32,6 +29,7 @@ class MbFetcher implements MbFetcherInterface
     {
         $this->url1 = $url1;
     }
+
 
     /**
      * @param int $source

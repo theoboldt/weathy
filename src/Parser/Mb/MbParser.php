@@ -219,6 +219,10 @@ class MbParser
         ];
     }
 
+    /**
+     * @param string $dayShort
+     * @return string
+     */
     private static function dayShortToTerm(string $dayShort)
     {
         switch (strtolower($dayShort)) {

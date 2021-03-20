@@ -43,3 +43,16 @@ services:
         arguments:
             $fetcher: '@App\Fetcher\Mb\MbCachedFetcher'
 
+    App\Fetcher\Oc\OcFetcher:
+        arguments:
+            $url1: '%env(OC_URL_1)%'
+
+    App\Fetcher\Oc\OcCachedFetcher:
+        arguments:
+            $fetcher: '@App\Fetcher\Oc\OcFetcher'
+            $cachePath: '%kernel.project_dir%/var/cache/oc'
+
+    App\Parser\Oc\OcParser:
+        arguments:
+            $fetcher: '@App\Fetcher\Oc\OcCachedFetcher'
+
