@@ -160,7 +160,7 @@ class MbParser
             function (Crawler $node) use (&$daily, &$i) {
                 $dayShort = trim($node->filter('.tab_day_short')->text());
 
-                $daily[$i]['day'] = self::dayShortToTerm($dayShort);
+                $daily[$i]['day'] = self::dayShortToCode($dayShort);
                 $daily[$i]['uvi'] = 0; //todo replace by real UV Index value
                 $tempMax          = trim($node->filter('.tab_temp_max')->text());
                 if (preg_match('/^([\-\d+]+)\s*/', $tempMax, $matches)) {
@@ -223,7 +223,7 @@ class MbParser
      * @param string $dayShort
      * @return string
      */
-    private static function dayShortToTerm(string $dayShort)
+    private static function dayShortToTerm(string $dayShort): string
     {
         switch (strtolower($dayShort)) {
             case 'sat':
@@ -242,6 +242,32 @@ class MbParser
                 return 'Fr';
             default:
                 return $dayShort;
+        }
+    }
+    
+    /**
+     * @param string $dayShort
+     * @return int
+     */
+    private static function dayShortToCode(string $dayShort): int
+    {
+        switch (strtolower($dayShort)) {
+            case 'sat':
+                return 7;
+            case 'sun':
+                return 1;
+            case 'mon':
+                return 2;
+            case 'tue':
+                return 3;
+            case 'wed':
+                return 4;
+            case 'thu':
+                return 5;
+            case 'fri':
+                return 6;
+            default:
+                return (int)$dayShort;
         }
     }
 }
