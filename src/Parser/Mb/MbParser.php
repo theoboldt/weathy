@@ -65,7 +65,7 @@ class MbParser
             function (Crawler $node) use (&$tribus, &$i) {
                 if ($node->matches('td')) {
                     if (preg_match('/^(\-\d+)°$/', trim($node->text()), $matches)) {
-                        $tribus[$i++]['temperature'] = (int)$matches[1];
+                        $tribus[$i++]['temp'] = (int)$matches[1];
                     }
 
                 }
@@ -77,11 +77,11 @@ class MbParser
             function (Crawler $node) use (&$tribus, &$i) {
                 if ($node->matches('td')) {
                     if (preg_match('/^(\d+)\-(\d+)$/', trim($node->text()), $matches)) {
-                        $windMin                    = (int)$matches[1];
-                        $windMax                    = (int)$matches[2];
-                        $tribus[$i]['wind_min']     = $windMin;
-                        $tribus[$i]['wind_max']     = $windMax;
-                        $tribus[$i]['wind_average'] = round(($windMin + $windMax) / 2);
+                        $windMin                = (int)$matches[1];
+                        $windMax                = (int)$matches[2];
+                        $tribus[$i]['wind_min'] = $windMin;
+                        $tribus[$i]['wind_max'] = $windMax;
+                        $tribus[$i]['wind_avg'] = round(($windMin + $windMax) / 2);
                         $i++;
                     }
                 }
@@ -100,7 +100,7 @@ class MbParser
                     } else {
                         $precipitation = null;
                     }
-                    $tribus[$i++]['rain_precipitation'] = $precipitation;
+                    $tribus[$i++]['rain_prec'] = $precipitation;
                 }
             }
         );
@@ -111,7 +111,7 @@ class MbParser
                 if ($node->matches('td')) {
                     $text = trim($node->text());
                     if (preg_match('/^(\d+)(?:\s*)\%$/', $text, $matches)) {
-                        $tribus[$i++]['rain_probability'] = (int)$matches[1];
+                        $tribus[$i++]['rain_prob'] = (int)$matches[1];
                     }
                 }
             }
@@ -136,9 +136,9 @@ class MbParser
                     $text, $matches
                 )) {
                     $hourly[$i++] = [
-                        'hour'               => (int)$matches[1],
-                        'rain_probability'   => (int)$matches[2],
-                        'rain_precipitation' => (float)$matches[3],
+                        'hour'      => (int)$matches[1],
+                        'rain_prob' => (int)$matches[2],
+                        'rain_prec' => (float)$matches[3],
                     ];
                 }
             }
@@ -161,14 +161,14 @@ class MbParser
                 $dayShort = trim($node->filter('.tab_day_short')->text());
 
                 $daily[$i]['day'] = self::dayShortToTerm($dayShort);
-
-                $tempMax = trim($node->filter('.tab_temp_max')->text());
+                $daily[$i]['uvi'] = 0; //todo replace by real UV Index value
+                $tempMax          = trim($node->filter('.tab_temp_max')->text());
                 if (preg_match('/^([\-\d+]+)\s*/', $tempMax, $matches)) {
-                    $daily[$i]['temperature_max'] = (int)$matches[1];
+                    $daily[$i]['temp_max'] = (int)$matches[1];
                 }
                 $tempMin = trim($node->filter('.tab_temp_min')->text());
                 if (preg_match('/^([\-\d+]+)\s*/', $tempMin, $matches)) {
-                    $daily[$i]['temperature_min'] = (int)$matches[1];
+                    $daily[$i]['temp_min'] = (int)$matches[1];
                 }
                 $wind = trim($node->filter('.wind')->text());
                 if (preg_match('/^.*(\d+)\skm\/h.*$/', $wind, $matches)) {
@@ -187,7 +187,7 @@ class MbParser
 
                 $predictabilityStyle = $node->filter('.meter_outer .meter_inner')->attr('style');
                 if (preg_match('/^.*width:\s+(\d+)\%.*$/', $predictabilityStyle, $matches)) {
-                    $daily[$i]['predictability'] = (int)$matches[1];
+                    $daily[$i]['pred'] = (int)$matches[1];
                 }
 
                 $i++;
