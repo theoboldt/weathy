@@ -198,12 +198,13 @@ class MbParser
     }
 
     /**
+     * @param int                $source
      * @param \DateTimeImmutable $date
      * @return array
      */
-    public function parse1(\DateTimeImmutable $date): array
+    public function parse(int $source, \DateTimeImmutable $date): array
     {
-        $html = $this->fetcher->fetch1($date);
+        $html = $this->fetcher->fetch($source, $date);
         $html = str_replace('<di class="precip-bar-flex">', '<div class="precip-bar-flex">', $html);
 
         $crawler = new Crawler($html);

@@ -17,12 +17,12 @@ use App\Fetcher\ClientTrait;
 class MbFetcher implements MbFetcherInterface
 {
     use ClientTrait;
-    
+
     /**
      * @var string
      */
     private string $url1;
-    
+
     /**
      * OnecallFetcher constructor.
      *
@@ -32,25 +32,41 @@ class MbFetcher implements MbFetcherInterface
     {
         $this->url1 = $url1;
     }
-    
+
     /**
+     * @param int $source
+     * @return string
+     */
+    public function urlForSource(int $source): string
+    {
+        switch ($source) {
+            case 1:
+                return $this->url1;
+            default:
+                throw new \InvalidArgumentException('Unknown source requested');
+        }
+    }
+
+    /**
+     * @param int                $source
      * @param \DateTimeImmutable $date
      * @return string
      */
-    public function fetch1(\DateTimeImmutable $date): string
+    public function fetch(int $source, \DateTimeImmutable $date): string
     {
-        if (empty($this->url1)) {
+        $url = $this->urlForSource($source);
+        if (empty($url)) {
             throw new \RuntimeException('Url not configured');
         }
-        $client   = $this->client($this->url1);
+        $client   = $this->client($url);
         $response = $client->get('');
         $status   = $response->getStatusCode();
-        
+
         if ($status === 200) {
             return $response->getBody()->getContents();
         } else {
             throw new \RuntimeException('Unexpected status code ' . $status . ' received');
         }
     }
-    
+
 }

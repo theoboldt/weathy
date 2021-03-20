@@ -2,6 +2,8 @@ index:
     path: /
     controller: App\Controller\DefaultController::index
 
-w1:
-    path: /w1
-    controller: App\Controller\DefaultController::w1
+weatherGeneral:
+    path: /w/{source}
+    controller: App\Controller\DefaultController::weatherGeneral
+    requirements:
+        source: '\d+'

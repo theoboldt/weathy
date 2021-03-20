@@ -13,7 +13,12 @@ namespace App\Fetcher\Mb;
 
 interface MbFetcherInterface
 {
-    
-    public function fetch1(\DateTimeImmutable $date);
-    
+
+    /**
+     * @param int                $source
+     * @param \DateTimeImmutable $date
+     * @return string
+     */
+    public function fetch(int $source, \DateTimeImmutable $date): string;
+
 }
