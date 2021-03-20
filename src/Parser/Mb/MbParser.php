@@ -84,7 +84,7 @@ class MbParser
                         $windMax                = (int)$matches[2];
                         $tribus[$i]['wind_min'] = $windMin;
                         $tribus[$i]['wind_max'] = $windMax;
-                        $tribus[$i]['wind_avg'] = round(($windMin + $windMax) / 2);
+//                        $tribus[$i]['wind_avg'] = round(($windMin + $windMax) / 2);
                         $i++;
                     }
                 }
@@ -97,13 +97,18 @@ class MbParser
                 if ($node->matches('td')) {
                     $text = trim($node->text());
                     if ($text === '< 1') {
-                        $precipitation = 0.5;
+                        $precipitationMin = 1;
+                        $precipitationMax = 1;
                     } elseif (is_numeric($text)) {
-                        $precipitation = (int)$text;
+                        $precipitationMin = (int)$text;
+                        $precipitationMax = (int)$text;
                     } else {
-                        $precipitation = null;
+                        $precipitationMin = 0;
+                        $precipitationMax = 0;
                     }
-                    $tribus[$i++]['rain_prec'] = $precipitation;
+                    $tribus[$i]['rain_min'] = $precipitationMin;
+                    $tribus[$i]['rain_max'] = $precipitationMax;
+                    ++$i;
                 }
             }
         );
@@ -175,13 +180,23 @@ class MbParser
                 }
                 $wind = trim($node->filter('.wind')->text());
                 if (preg_match('/^.*(\d+)\skm\/h.*$/', $wind, $matches)) {
-                    $daily[$i]['wind_avg'] = (int)$matches[1];
+                    $daily[$i]['wind_min'] = (int)$matches[1];
+                    $daily[$i]['wind_max'] = (int)$matches[1];
                 }
                 $rain = trim($node->filter('.tab_precip')->text());
-                if ($rain !== '-') {
-                    $rain = '';
+                if (preg_match('/(\d)\-(\d)\s*mm/i', $rain, $matches)) {
+                    $rainMin = (int)$matches[1];
+                    $rainMax = (int)$matches[2];
+                } elseif (preg_match('/(\d)\s*mm/i', $rain, $matches)) {
+                    $rainMin = (int)$matches[1];
+                    $rainMax = (int)$matches[1];
+                } else {
+                    $rainMin = 0;
+                    $rainMax = 0;
                 }
-                $daily[$i]['rain'] = $rain;
+                $daily[$i]['rain_min']  = $rainMin;
+                $daily[$i]['rain_max']  = $rainMax;
+                $daily[$i]['rain_prob'] = 100; //TODO
 
                 $sun = trim($node->filter('.tab_sun')->text());
                 if (preg_match('/^\s*(\d+)\sh\s*$/', $sun, $matches)) {
@@ -247,7 +262,7 @@ class MbParser
                 return $dayShort;
         }
     }
-    
+
     /**
      * @param string $dayShort
      * @return int
