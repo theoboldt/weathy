@@ -64,10 +64,13 @@ class MbParser
         $dayNodes->filter('tr.temperatures')->children()->each(
             function (Crawler $node) use (&$tribus, &$i) {
                 if ($node->matches('td')) {
-                    if (preg_match('/^(\-\d+)°$/', trim($node->text()), $matches)) {
-                        $tribus[$i++]['temp'] = (int)$matches[1];
+                    $text = trim($node->text());
+                    if (preg_match('/^([\-\d]+)°$/', $text, $matches)) {
+                        $temperature = (int)$matches[1];
+                    } else {
+                        $temperature = null;
                     }
-
+                    $tribus[$i++]['temp'] = $temperature;
                 }
             }
         );
