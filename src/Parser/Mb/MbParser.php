@@ -175,7 +175,7 @@ class MbParser
                 }
                 $wind = trim($node->filter('.wind')->text());
                 if (preg_match('/^.*(\d+)\skm\/h.*$/', $wind, $matches)) {
-                    $daily[$i]['wind'] = (int)$matches[1];
+                    $daily[$i]['wind_avg'] = (int)$matches[1];
                 }
                 $rain = trim($node->filter('.tab_precip')->text());
                 if ($rain !== '-') {
