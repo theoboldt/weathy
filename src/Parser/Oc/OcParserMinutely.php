@@ -12,11 +12,9 @@
 namespace App\Parser\Oc;
 
 
-use App\Fetcher\Oc\OcFetcher;
 use App\Fetcher\Oc\OcFetcherInterface;
-use Symfony\Component\DomCrawler\Crawler;
 
-class OcParser
+class OcParserMinutely
 {
 
     /**
@@ -25,7 +23,7 @@ class OcParser
     private OcFetcherInterface $fetcher;
 
     /**
-     * OcParser constructor.
+     * OcParserMinutely constructor.
      *
      * @param OcFetcherInterface $fetcher
      */

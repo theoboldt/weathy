@@ -52,7 +52,11 @@ services:
             $fetcher: '@App\Fetcher\Oc\OcFetcher'
             $cachePath: '%kernel.project_dir%/var/cache/oc'
 
-    App\Parser\Oc\OcParser:
+    App\Parser\Oc\OcParserMinutely:
+        arguments:
+            $fetcher: '@App\Fetcher\Oc\OcCachedFetcher'
+
+    App\Parser\Oc\OcParserForecast:
         arguments:
             $fetcher: '@App\Fetcher\Oc\OcCachedFetcher'
 

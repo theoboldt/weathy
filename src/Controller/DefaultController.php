@@ -11,10 +11,8 @@
 
 namespace App\Controller;
 
-use App\Fetcher\Mb\MbCachedFetcher;
-use App\Fetcher\Mb\MbFetcher;
-use App\Parser\Mb\MbParser;
-use App\Parser\Oc\OcParser;
+use App\Parser\Oc\OcParserMinutely;
+use App\Parser\ParserForecast;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -23,25 +21,25 @@ class DefaultController
 {
 
     /**
-     * @var MbParser
+     * @var ParserForecast
      */
-    private MbParser $mbParser;
+    private ParserForecast $forecastParser;
 
     /**
-     * @var OcParser
+     * @var OcParserMinutely
      */
-    private OcParser $ocParser;
+    private OcParserMinutely $ocParser;
 
     /**
      * DefaultController constructor.
      *
-     * @param MbParser $mbParser
-     * @param OcParser $ocParser
+     * @param ParserForecast   $mbParser
+     * @param OcParserMinutely $ocParser
      */
-    public function __construct(MbParser $mbParser, OcParser $ocParser)
+    public function __construct(ParserForecast $mbParser, OcParserMinutely $ocParser)
     {
-        $this->mbParser = $mbParser;
-        $this->ocParser = $ocParser;
+        $this->forecastParser = $mbParser;
+        $this->ocParser       = $ocParser;
     }
 
     /**
@@ -63,11 +61,11 @@ class DefaultController
         }
 
         $date   = new \DateTimeImmutable('now');
-        $result = $this->mbParser->parse($source, $date);
+        $result = $this->forecastParser->parse($source, $date);
 
         return new JsonResponse(['status' => 'ok', 'result' => $result, 'dt' => time()]);
     }
-    
+
     /**
      * @param int $source
      * @return Response
