@@ -208,8 +208,11 @@ class MbParser
 
                 $iconNode = $node->filter('.weather .day .weather_pictogram');
                 $imgSrc   = $iconNode->attr('src');
-                if (preg_match('/\/(\d+)_(?:[a-z\.]*)$/', $imgSrc, $matches)) {
+                if (preg_match('/\/(\d+)_day(?:.*)$/', $imgSrc, $matches)) {
                     $daily[$i]['condition'] = self::convertConditionCode($matches[1]);
+                }
+                if (preg_match('/\/(\d+)_iday(?:.*)$/', $imgSrc, $matches)) {
+                    $daily[$i]['condition'] = self::convertIConditionCode($matches[1]);
                 }
                 $i++;
             }
@@ -239,6 +242,51 @@ class MbParser
             'daily'  => $this->provideDaily($dayNodes),
         ];
     }
+    
+    private static function convertIConditionCode(int $mbCode): int
+    {
+        switch ($mbCode) {
+            case 1:
+                return 110;
+            case 2:
+                return 215;
+            case 3: //mostly cloudy, might should get a separate icon
+                return 215;
+            case 4:
+                return 226;
+            case 5:
+                return 130; //fog
+            case 6:
+                return 326;
+            case 7:
+                return 315;
+            case 8:
+                return 514;
+            case 9:
+                return 426;
+            case 10:
+                return 415;
+            case 11: //sun, 2 cloud, 2 snow, 2 rain
+                return 436;
+            case 12:
+                return 324;
+            case 13:
+                return 424;
+            case 14: // sun, 2 clouds, 5 rain
+                return 315;
+            case 15: // sun, 2 clouds, 6 snow
+                return 416;
+            case 16:
+                return 315;
+            case 17:
+                return 415;
+            case 18:
+            case 19:
+                return 810;
+            default:
+                return (int)('9' . (string)$mbCode);
+        }
+    }
 
     /**
      * Switch to internal condition code
@@ -246,7 +294,7 @@ class MbParser
      * @param int $mbCode
      * @return int
      */
-    private static function convertConditionCode(int $mbCode)
+    private static function convertConditionCode(int $mbCode): int
     {
         switch ($mbCode) {
             // 100 sun
@@ -286,7 +334,6 @@ class MbParser
             // 300 rain
             case 31: //mostly sun, 1 cloud, rain 3 
                 return 315;
-
             case 33: //cloud 2 (dark and light), rain 3
                 return 324;
             case 23: //cloud 2 (dark and light), rain 5 
