@@ -310,6 +310,7 @@ class MbParser
             // 200 cloudy
             case 4: //sun, cloud
             case 5: //sun, cloud
+                return 214;
             case 6: //sun, cloud
                 return 215;
             case 7: //sun, cloud 2
