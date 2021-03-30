@@ -56,10 +56,15 @@ class FcParserForecast
             $rainProb  = round($dataTribus['pop'] * 100);
             $rainValue = round(isset($dataTribus['rain']['3h']) ?? 0);
 
+            $tempMax = $dataTribus['main']['temp_max'];
+            $tempMin = $dataTribus['main']['temp_min'];
+
             $resultTribus[] = [
                 'hour'      => (int)$dt->format('H'),
                 'condition' => $condition,
-                'temp'  => (int)round($dataTribus['main']['temp_max']),
+                'temp'      => (int)round(($tempMin + $tempMax) / 2),
+                'temp_max'  => (int)round($tempMax),
+                'temp_min'  => (int)round($tempMin),
                 //                'temp_feel' => (int)round($dataTribus['main']['feels_like']),
                 'wind_min'  => (int)$windSpeed,
                 'wind_max'  => (int)$windSpeed,
