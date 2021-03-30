@@ -237,7 +237,7 @@ class MbParser
         $dailyNodes = $crawler->filter('html body main #tab_wrapper .tab_detail.active table tbody');
 
         return [
-            'tribus' => $this->provideTribus($dailyNodes),
+//            'tribus' => $this->provideTribus($dailyNodes),
             'hourly' => $this->provideHourly($dailyNodes),
             'daily'  => $this->provideDaily($dayNodes),
         ];

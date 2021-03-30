@@ -63,7 +63,14 @@ class DefaultController
         $date   = new \DateTimeImmutable('now');
         $result = $this->forecastParser->parse($source, $date);
 
-        return new JsonResponse(['status' => 'ok', 'result' => $result, 'dt' => time()]);
+        return new JsonResponse(
+            [
+                'status' => 'ok',
+                'result' => $result,
+                'dt'     => time(),
+                'c'      => ['h' => (int)$date->format('H'), 'm' => (int)$date->format('i')],
+            ]
+        );
     }
 
     /**
@@ -79,7 +86,14 @@ class DefaultController
         $date   = new \DateTimeImmutable('now');
         $result = $this->ocParser->parse($source, $date);
 
-        return new JsonResponse(['status' => 'ok', 'result' => $result, 'dt' => time()]);
+        return new JsonResponse(
+            [
+                'status' => 'ok',
+                'result' => $result,
+                'dt'     => time(),
+                'c'      => ['h' => (int)$date->format('H'), 'm' => (int)$date->format('i')],
+            ]
+        );
     }
 
 }

@@ -73,7 +73,7 @@ class OcCachedFetcher implements OcFetcherInterface
      */
     private function getCacheKey(int $source, int $provider, \DateTimeImmutable $date): string
     {
-        return self::MAIN_KEY . '_' . $source . '_' . $provider . '_' . $date->format('Y-m-d_h_i') . '.json';
+        return self::MAIN_KEY . '_' . $source . '_' . $provider . '_' . $date->format('Y-m-d_H_i') . '.json';
     }
 
     /**

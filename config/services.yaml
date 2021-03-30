@@ -58,7 +58,21 @@ services:
         arguments:
             $fetcher: '@App\Fetcher\Oc\OcCachedFetcher'
 
-    App\Parser\Oc\OcParserForecast:
+    App\Parser\Oc\OcParserDaily:
         arguments:
             $fetcher: '@App\Fetcher\Oc\OcCachedFetcher'
+
+    App\Fetcher\Fc\FcFetcher:
+        factory: [ 'App\Fetcher\Fc\FcFetcher', 'create' ]
+        arguments:
+            $url1: '%env(FC_URL_1)%'
+
+    App\Fetcher\Fc\FcCachedFetcher:
+        arguments:
+            $fetcher: '@App\Fetcher\Fc\FcFetcher'
+            $cachePath: '%kernel.project_dir%/var/cache/fc'
+    
+    App\Parser\Fc\FcParserForecast:
+        arguments:
+            $fetcher: '@App\Fetcher\Fc\FcCachedFetcher'
 

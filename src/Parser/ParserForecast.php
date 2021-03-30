@@ -12,25 +12,30 @@
 namespace App\Parser;
 
 
+use App\Parser\Fc\FcParserForecast;
 use App\Parser\Mb\MbParser;
-use App\Parser\Oc\OcParserForecast;
+use App\Parser\Oc\OcParserDaily;
 
 class ParserForecast
 {
     private MbParser $mbParser;
 
-    private OcParserForecast $ocParser;
+    private OcParserDaily $ocParser;
+
+    private FcParserForecast $fcParser;
 
     /**
      * ParserForecast constructor.
      *
      * @param MbParser         $mbParser
-     * @param OcParserForecast $ocParser
+     * @param OcParserDaily    $ocParser
+     * @param FcParserForecast $fcParser
      */
-    public function __construct(MbParser $mbParser, OcParserForecast $ocParser)
+    public function __construct(MbParser $mbParser, OcParserDaily $ocParser, FcParserForecast $fcParser)
     {
         $this->mbParser = $mbParser;
         $this->ocParser = $ocParser;
+        $this->fcParser = $fcParser;
     }
 
     /**
@@ -42,8 +47,11 @@ class ParserForecast
     {
         $resultMb = $this->mbParser->parse($source, $date);
         $resultOc = $this->ocParser->parse($source, $date);
-
-        foreach ($resultMb['daily'] as &$mbDaily) {
+        $resultFc = $this->fcParser->parse($source, $date);
+        
+        $result = array_merge($resultMb, $resultFc);
+        
+        foreach ($result['daily'] as &$mbDaily) {
 
             foreach ($resultOc['daily'] as $ocIndex => $ocDaily) {
                 if ($ocDaily['day'] === $mbDaily['day']) {
@@ -66,8 +74,8 @@ class ParserForecast
                 }
             }
         }
-        
-        return $resultMb;
+
+        return $result;
     }
 
 }

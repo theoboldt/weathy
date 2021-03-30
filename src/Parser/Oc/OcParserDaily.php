@@ -15,7 +15,7 @@ namespace App\Parser\Oc;
 use App\Fetcher\Oc\OcFetcherInterface;
 use App\Parser\Mb\MbParser;
 
-class OcParserForecast
+class OcParserDaily
 {
 
     /**

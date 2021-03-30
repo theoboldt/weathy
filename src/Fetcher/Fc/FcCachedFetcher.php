@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Fetcher\Mb;
+namespace App\Fetcher\Fc;
 
 
-class MbCachedFetcher implements MbFetcherInterface
+use App\Fetcher\Mb\MbFetcherInterface;
+
+class FcCachedFetcher implements FcFetcherInterface
 {
-    const MAIN_KEY = 'mb';
+    const MAIN_KEY = 'fc';
 
     /**
      * @var string
@@ -21,33 +23,20 @@ class MbCachedFetcher implements MbFetcherInterface
     private string $cachePath;
 
     /**
-     * @var MbFetcherInterface
+     * @var FcFetcherInterface
      */
-    private MbFetcherInterface $fetcher;
+    private FcFetcherInterface $fetcher;
 
     /**
      * MbCachedFetcher constructor.
      *
      * @param string             $cachePath
-     * @param MbFetcherInterface $fetcher
+     * @param FcFetcherInterface $fetcher
      */
-    public function __construct(string $cachePath, MbFetcherInterface $fetcher)
+    public function __construct(string $cachePath, FcFetcherInterface $fetcher)
     {
         $this->cachePath = rtrim($cachePath, DIRECTORY_SEPARATOR);
         $this->fetcher   = $fetcher;
-    }
-
-    /**
-     * Get cache key
-     *
-     * @param int                $source
-     * @param int                $provider
-     * @param \DateTimeImmutable $date
-     * @return string
-     */
-    private function getCacheKey(int $source, int $provider, \DateTimeImmutable $date): string
-    {
-        return self::MAIN_KEY . '_' . $source . '_' . $provider . '_' . $date->format('Y-m-d_H') . '.htm';
     }
 
     /**
@@ -75,6 +64,19 @@ class MbCachedFetcher implements MbFetcherInterface
     }
 
     /**
+     * Get cache key
+     *
+     * @param int                $source
+     * @param int                $provider
+     * @param \DateTimeImmutable $date
+     * @return string
+     */
+    private function getCacheKey(int $source, int $provider, \DateTimeImmutable $date): string
+    {
+        return self::MAIN_KEY . '_' . $source . '_' . $provider . '_' . $date->format('Y-m-d_H') . '.json';
+    }
+
+    /**
      * @param int                $source
      * @param int                $provider
      * @param \DateTimeImmutable $date
@@ -85,5 +87,4 @@ class MbCachedFetcher implements MbFetcherInterface
         $key = $this->getCacheKey($source, $provider, $date);
         return $this->cachePath . DIRECTORY_SEPARATOR . $key;
     }
-
 }
