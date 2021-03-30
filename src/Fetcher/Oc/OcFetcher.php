@@ -17,15 +17,18 @@ use App\Fetcher\ClientTrait;
 class OcFetcher implements OcFetcherInterface
 {
     use ClientTrait;
-    
-    private string $url1;
-    
+
+    /**
+     * @var string[]
+     */
+    private array $url1;
+
     /**
      * OcFetcher constructor.
      *
-     * @param string $url1
+     * @param string[] $url1
      */
-    public function __construct(string $url1)
+    public function __construct(array $url1)
     {
         $this->url1 = $url1;
     }
@@ -39,7 +42,7 @@ class OcFetcher implements OcFetcherInterface
     {
         switch ($source) {
             case 1:
-                return $this->url1;
+                return $this->getUrl1();
             default:
                 throw new \InvalidArgumentException('Unknown source requested');
         }
@@ -67,4 +70,20 @@ class OcFetcher implements OcFetcherInterface
         }
     }
 
+    /**
+     * @return string
+     */
+    private function getUrl1(): string
+    {
+        return $this->url1[array_rand($this->url1)];
+    }
+
+    /**
+     * @param string $url1
+     * @return $this
+     */
+    public function create(string $url1): self
+    {
+        return new self(explode(';', $url1));
+    }
 }

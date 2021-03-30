@@ -31,6 +31,7 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Fetcher\Mb\MbFetcher:
+        factory: [ 'App\Fetcher\Mb\MbFetcher', 'create' ]
         arguments:
             $url1: '%env(MB_URL_1)%'
 
@@ -44,6 +45,7 @@ services:
             $fetcher: '@App\Fetcher\Mb\MbCachedFetcher'
 
     App\Fetcher\Oc\OcFetcher:
+        factory: [ 'App\Fetcher\Oc\OcFetcher', 'create' ]
         arguments:
             $url1: '%env(OC_URL_1)%'
 
