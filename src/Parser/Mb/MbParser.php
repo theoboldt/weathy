@@ -249,9 +249,9 @@ class MbParser
             case 1:
                 return 110;
             case 2:
-                return 215;
-            case 3: //mostly cloudy, might should get a separate icon
                 return 214;
+            case 3: //mostly cloudy, might should get a separate icon
+                return 215;
             case 4:
                 return 226;
             case 5:
