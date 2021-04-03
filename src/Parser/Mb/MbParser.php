@@ -181,6 +181,9 @@ class MbParser
                 if (preg_match('/^.*(\d+)\skm\/h.*$/', $wind, $matches)) {
                     $daily[$i]['wind_min'] = (int)$matches[1];
                     $daily[$i]['wind_max'] = (int)$matches[1];
+                } elseif (preg_match('/^(\d+)\-(\d+)$/', $wind, $matches)) {
+                    $daily[$i]['wind_min'] = (int)$matches[1];
+                    $daily[$i]['wind_max'] = (int)$matches[2];
                 }
                 $rain = trim($node->filter('.tab_precip')->text());
                 if (preg_match('/(\d)\-(\d)\s*mm/i', $rain, $matches)) {
