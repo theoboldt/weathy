@@ -185,19 +185,31 @@ class MbParser
                     $daily[$i]['wind_min'] = (int)$matches[1];
                     $daily[$i]['wind_max'] = (int)$matches[2];
                 }
-                $rain = trim($node->filter('.tab_precip')->text());
-                if (preg_match('/(\d)\-(\d)\s*mm/i', $rain, $matches)) {
+                $precip = trim($node->filter('.tab_precip')->text());
+                if (preg_match('/(\d+)\-(\d+)\s*mm/i', $precip, $matches)) {
                     $rainMin = (int)$matches[1];
                     $rainMax = (int)$matches[2];
-                } elseif (preg_match('/(\d)\s*mm/i', $rain, $matches)) {
+                } elseif (preg_match('/(\d+)\s*mm/i', $precip, $matches)) {
                     $rainMin = (int)$matches[1];
                     $rainMax = (int)$matches[1];
                 } else {
                     $rainMin = 0;
                     $rainMax = 0;
                 }
+                if (preg_match('/(\d+)\-(\d+)\s*cm/i', $precip, $matches)) {
+                    $snowMin = (int)$matches[1];
+                    $snowMax = (int)$matches[2];
+                } elseif (preg_match('/(\d+)\s*cm/i', $precip, $matches)) {
+                    $snowMin = (int)$matches[1];
+                    $snowMax = (int)$matches[1];
+                } else {
+                    $snowMin = 0;
+                    $snowMax = 0;
+                }
                 $daily[$i]['rain_min'] = $rainMin;
                 $daily[$i]['rain_max'] = $rainMax;
+                $daily[$i]['snow_min'] = $snowMin;
+                $daily[$i]['snow_max'] = $snowMax;
 
                 $sun = trim($node->filter('.tab_sun')->text());
                 if (preg_match('/^\s*(\d+)\sh\s*$/', $sun, $matches)) {
