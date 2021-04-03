@@ -62,7 +62,7 @@ class FcParserForecast
             $resultTribus[] = [
                 'hour'      => (int)$dt->format('H'),
                 'condition' => $condition,
-                'temp'      => (int)round(($tempMin + $tempMax) / 2),
+                'temp'      => (int)round(($tempMin + $tempMax + $tempMax) / 3), //temp max get's more weighted
                 'temp_max'  => (int)round($tempMax),
                 'temp_min'  => (int)round($tempMin),
                 //                'temp_feel' => (int)round($dataTribus['main']['feels_like']),
