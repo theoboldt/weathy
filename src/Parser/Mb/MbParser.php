@@ -166,14 +166,14 @@ class MbParser
 
         $dailyNodes->each(
             function (Crawler $node) use (&$daily, &$i) {
-                $dayShort = trim($node->filter('.tab_day_short')->text());
+                $dayShort = trim($node->filter('.tab-day-short')->text());
 
                 $daily[$i]['day'] = self::dayShortToCode($dayShort);
-                $tempMax          = trim($node->filter('.tab_temp_max')->text());
+                $tempMax          = trim($node->filter('.tab-temp-max')->text());
                 if (preg_match('/^([\-\d+]+)\s*/', $tempMax, $matches)) {
                     $daily[$i]['temp_max'] = (int)$matches[1];
                 }
-                $tempMin = trim($node->filter('.tab_temp_min')->text());
+                $tempMin = trim($node->filter('.tab-temp-min')->text());
                 if (preg_match('/^([\-\d+]+)\s*/', $tempMin, $matches)) {
                     $daily[$i]['temp_min'] = (int)$matches[1];
                 }
@@ -185,7 +185,7 @@ class MbParser
                     $daily[$i]['wind_min'] = (int)$matches[1];
                     $daily[$i]['wind_max'] = (int)$matches[2];
                 }
-                $precip = trim($node->filter('.tab_precip')->text());
+                $precip = trim($node->filter('.tab-precip')->text());
                 if (preg_match('/(\d+)\-(\d+)\s*mm/i', $precip, $matches)) {
                     $rainMin = (int)$matches[1];
                     $rainMax = (int)$matches[2];
@@ -211,17 +211,17 @@ class MbParser
                 $daily[$i]['snow_min'] = $snowMin;
                 $daily[$i]['snow_max'] = $snowMax;
 
-                $sun = trim($node->filter('.tab_sun')->text());
+                $sun = trim($node->filter('.tab-sun')->text());
                 if (preg_match('/^\s*(\d+)\sh\s*$/', $sun, $matches)) {
                     $daily[$i]['sun'] = (int)$matches[1];
                 }
 
-                $predictabilityStyle = $node->filter('.meter_outer .meter_inner')->attr('style');
+                $predictabilityStyle = $node->filter('.meter-outer .meter-inner')->attr('style');
                 if (preg_match('/^.*width:\s+(\d+)\%.*$/', $predictabilityStyle, $matches)) {
                     $daily[$i]['pred'] = (int)$matches[1];
                 }
 
-                $iconNode = $node->filter('.weather .day .weather_pictogram');
+                $iconNode = $node->filter('.weather .day .weather-pictogram');
                 $imgSrc   = $iconNode->attr('src');
                 if (preg_match('/\/(\d+)_day(?:.*)$/', $imgSrc, $matches)) {
                     $daily[$i]['condition'] = self::convertConditionCode($matches[1]);
@@ -249,7 +249,7 @@ class MbParser
         $crawler = new Crawler($html);
 
         $dayNodes   = $crawler->filter('html body main #tab_wrapper .tab');
-        $dailyNodes = $crawler->filter('html body main #tab_wrapper .tab_detail.active table tbody');
+        $dailyNodes = $crawler->filter('html body main #tab_wrapper .tab-detail.active table tbody');
 
         return [
 //            'tribus' => $this->provideTribus($dailyNodes),
