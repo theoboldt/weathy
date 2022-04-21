@@ -85,6 +85,7 @@ class FcParserForecast
             'tribus'  => $resultTribus,
             'sunrise' => ['h' => (int)$sunrise->format('H'), 'm' => (int)$sunrise->format('i')],
             'sunset'  => ['h' => (int)$sunset->format('H'), 'm' => (int)$sunset->format('i')],
+            'city'    => $data['city']['name'],
         ];
     }
 

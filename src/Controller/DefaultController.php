@@ -68,7 +68,7 @@ class DefaultController
                 'status' => 'ok',
                 'result' => $result,
                 'dt'     => time(),
-                'c'      => ['h' => (int)$date->format('H'), 'm' => (int)$date->format('i')],
+                'c'      => self::dateStructure($date),
             ]
         );
     }
@@ -91,9 +91,30 @@ class DefaultController
                 'status' => 'ok',
                 'result' => $result,
                 'dt'     => time(),
-                'c'      => ['h' => (int)$date->format('H'), 'm' => (int)$date->format('i')],
+                'c'      => self::dateStructure($date),
             ]
         );
+    }
+
+    /**
+     * Provide date structure
+     *
+     * @param \DateTimeInterface|null $date
+     * @return int[]
+     */
+    private static function dateStructure(?\DateTimeInterface $date = null): array
+    {
+        if (!$date) {
+            $date = new \DateTimeImmutable('now');
+        }
+
+        return [
+            'D' => (int)$date->format('j'), //day
+            'M' => (int)$date->format('m'), //month
+            'Y' => (int)$date->format('Y'), //year
+            'h' => (int)$date->format('H'),
+            'm' => (int)$date->format('i'),
+        ];
     }
 
 }
