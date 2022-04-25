@@ -36,20 +36,22 @@ class OcParserDaily
     /**
      * @param int                $source
      * @param \DateTimeImmutable $date
+     * @param int|null           $tribusFirstHour
      * @return array
      */
-    public function parse(int $source, \DateTimeImmutable $date): array
+    public function parse(int $source, \DateTimeImmutable $date, ?int $tribusFirstHour = null): array
     {
-        $json = $this->fetcher->fetch($source, $date);
-        $data = json_decode($json, true);
+        $json         = $this->fetcher->fetch($source, $date);
+        $data         = json_decode($json, true);
+        $dataTimezone = new \DateTimeZone($data['timezone']);
 
         $resultDaily = [];
         foreach ($data['daily'] as $dataDaily) {
             $dt        = \DateTimeImmutable::createFromFormat('U', $dataDaily['dt']);
             $dtWeekday = MbParser::dayShortToCode($dt->format('D'));
-            $windSpeed     = round($dataDaily['wind_speed'] * 3.6);
-            $rainProb      = round($dataDaily['pop'] * 100);
-            $rainValue     = round(isset($dataDaily['rain']) ?? 0);
+            $windSpeed = round($dataDaily['wind_speed'] * 3.6);
+            $rainProb  = round($dataDaily['pop'] * 100);
+            $rainValue = round(isset($dataDaily['rain']) ?? 0);
             
             $resultDaily[] = [
                 'day'       => $dtWeekday,
@@ -63,8 +65,35 @@ class OcParserDaily
                 'rain_max'  => (int)$rainValue,
             ];
         }
+        
+        $resultHourly = [];
+        $expectedHourOccurred = false;
+        if ($tribusFirstHour) {
+            foreach ($data['hourly'] as $dataHourly) {
+                $dt          = \DateTimeImmutable::createFromFormat('U', $dataHourly['dt']);
+                $dtTimezoned = $dt->setTimezone($dataTimezone);
+                $dtHour      = (int)$dtTimezoned->format('H');
 
-        return ['daily' => $resultDaily];
+                if (!$expectedHourOccurred && $dtHour != $tribusFirstHour) {
+                    continue;
+                }
+                $expectedHourOccurred = true;
+
+                $rainProb  = isset($dataHourly['pop']) ? round($dataHourly['pop'] * 100) : 0;
+                $rainValue = isset($dataHourly['rain']['1h']) ? $dataHourly['rain']['1h'] : 0.0; //mm
+
+                $resultHourly[] = [
+                    'hour'   => $dtHour,
+                    'prob'   => (int)(min($rainProb, 100)),
+                    'amount' => $rainValue,
+                ];
+                if (count($resultHourly) >= 24) {
+                    break;
+                }
+            }
+        }
+        
+        return ['daily' => $resultDaily, 'hourly_rain' => $resultHourly];
     }
 
 }

@@ -129,6 +129,8 @@ class MbParser
     }
 
     /**
+     * Provide hourly rain data; Only cares data for current date, always from hour 0 to 23
+     * 
      * @param Crawler $dayNodes
      * @return array
      */
@@ -146,7 +148,7 @@ class MbParser
                     $hourly[$i++] = [
                         'hour'      => (int)$matches[1],
                         'rain_prob' => (int)$matches[2],
-                        'rain_prec' => (float)$matches[3],
+                        'rain_prec' => (float)$matches[3], //Precipitation volume, mm
                     ];
                 }
             }
@@ -253,7 +255,7 @@ class MbParser
 
         return [
 //            'tribus' => $this->provideTribus($dailyNodes),
-            'hourly' => $this->provideHourly($dailyNodes),
+//            'hourly' => $this->provideHourly($dailyNodes),
             'daily'  => $this->provideDaily($dayNodes),
         ];
     }

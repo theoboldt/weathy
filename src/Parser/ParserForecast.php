@@ -45,11 +45,13 @@ class ParserForecast
      */
     public function parse(int $source, \DateTimeImmutable $date): array
     {
-        $resultMb = $this->mbParser->parse($source, $date);
-        $resultOc = $this->ocParser->parse($source, $date);
-        $resultFc = $this->fcParser->parse($source, $date);
+        $resultMb    = $this->mbParser->parse($source, $date);
+        $resultFc    = $this->fcParser->parse($source, $date);
+        $tribusFirst = reset($resultFc['tribus']);
+        $resultOc    = $this->ocParser->parse($source, $date, $tribusFirst['hour']);
         
         $result = array_merge($resultMb, $resultFc);
+        $result['hourly_rain'] = $resultOc['hourly_rain']; 
         
         foreach ($result['daily'] as &$mbDaily) {
 

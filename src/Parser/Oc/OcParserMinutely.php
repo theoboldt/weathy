@@ -53,7 +53,7 @@ class OcParserMinutely
             if ($datum['dt'] > $maxDt) {
                 $maxDt = $datum['dt'];
             }
-            $minutely[] = $datum['precipitation'];
+            $minutely[] = $datum['precipitation']; //Precipitation volume, mm
         }
 
         return [
