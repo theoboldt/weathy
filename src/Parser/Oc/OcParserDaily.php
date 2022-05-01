@@ -80,12 +80,12 @@ class OcParserDaily
                 $expectedHourOccurred = true;
 
                 $rainProb  = isset($dataHourly['pop']) ? round($dataHourly['pop'] * 100) : 0;
-                $rainValue = isset($dataHourly['rain']['1h']) ? $dataHourly['rain']['1h'] : 0.0; //mm
+                $rainValue = $dataHourly['rain']['1h'] ?? 0; //mm
 
                 $resultHourly[] = [
                     'hour'   => $dtHour,
                     'prob'   => (int)(min($rainProb, 100)),
-                    'amount' => $rainValue,
+                    'amount' => (int)round($rainValue),
                 ];
                 if (count($resultHourly) >= 24) {
                     break;
